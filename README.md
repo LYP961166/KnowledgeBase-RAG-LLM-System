@@ -5,9 +5,9 @@
 **基于 Streamlit 的本地知识库上传与 RAG 检索增强问答系统**
 
 [![Python](https://img.shields.io/badge/Python-3.10+-blue?style=flat-square)](https://www.python.org/)
-[![Streamlit](https://img.shields.io/badge/Streamlit-1.40-FF4B4B?style=flat-square&logo=streamlit&logoColor=white)](https://streamlit.io/)
-[![LangChain](https://img.shields.io/badge/LangChain-0.3-1C3C3C?style=flat-square&logo=langchain&logoColor=white)](https://www.langchain.com/)
-[![Chroma](https://img.shields.io/badge/Chroma-0.5-F48C06?style=flat-square&logo=chroma&logoColor=white)](https://www.trychroma.com/)
+[![Streamlit](https://img.shields.io/badge/Streamlit-1.39-FF4B4B?style=flat-square&logo=streamlit&logoColor=white)](https://streamlit.io/)
+[![LangChain](https://img.shields.io/badge/LangChain-0.1-1C3C3C?style=flat-square&logo=langchain&logoColor=white)](https://www.langchain.com/)
+[![Chroma](https://img.shields.io/badge/Chroma-0.4-F48C06?style=flat-square&logo=chroma&logoColor=white)](https://www.trychroma.com/)
 [![License](https://img.shields.io/badge/License-MIT-yellow?style=flat-square)](./LICENSE)
 
 [中文](README.md) | [English](README.en.md)
@@ -24,7 +24,7 @@
 - **RAG 问答** — `Retrieval → Prompt → LLM → Output` 链式调用，支持流式输出
 - **会话管理** — 消息历史留存，支持基于历史的连续追问
 
-> 适合作为 RAG 入门实践：结构清晰、依赖轻量、无需 GPU，替换自己的业务文本即可迁移到实际场景。
+> 适合作为 RAG 入门实践：依赖轻量、无需 GPU，替换成自己的业务文本即可使用。
 
 ## 效果展示
 
@@ -46,16 +46,13 @@
 
 ## 技术架构
 
-```
-┌──────────────┐   上传 .txt    ┌──────────────────┐   切分 + MD5去重
-│  Streamlit   │ ────────────▶ │  KnowledgeBase   │ ──────────────┐
-│  上传页面     │                │  (knowledge_base) │               │
-└──────────────┘                └──────────────────┘               ▼
-                                                          ┌────────────────┐
-┌──────────────┐   用户提问     ┌──────────────────┐        │  Chroma        │
-│  Streamlit   │ ────────────▶ │   RAG Chain      │ ─────▶ │  向量库(本地)   │
-│  聊天页面     │ ◀──────────── │     (rag.py)     │        │  持久化         │
-└──────────────┘   流式输出     └──────────────────┘        └────────────────┘
+```mermaid
+flowchart LR
+    UP["Streamlit 上传页"] -- "上传 .txt" --> KB["KnowledgeBase<br/>切分 + MD5 去重"]
+    KB --> DB[("Chroma 向量库<br/>本地持久化")]
+    CH["Streamlit 聊天页"] -- "用户提问" --> RC["RAG Chain<br/>检索 → 提示词 → LLM"]
+    DB -- "相关文档" --> RC
+    RC -- "流式输出" --> CH
 ```
 
 | 模块 | 说明 |
@@ -151,13 +148,9 @@ streamlit run app_chat.py
 
 ## 扩展方向
 
-本项目是一个基础但延展性很好的 RAG 脚手架，可按需扩展：
-
 - **检索增强** — 引入 Rerank（如 bge-reranker）提升召回质量
 - **文件类型** — 通过 LangChain 插件支持 PDF / Markdown / Word
-- **推理链路** — CoT → ToT，多模型混合输出
-- **存储引擎** — Chroma（轻量，适合个人复现）→ FAISS / Milvus（高并发，适合企业）
-- **产品化** — 企业级 RAG → 功能插件 → Agent → AI 产品
+- **存储引擎** — Chroma（轻量）→ FAISS / Milvus（大数据量）
 
 ## License
 

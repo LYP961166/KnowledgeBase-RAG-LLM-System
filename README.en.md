@@ -5,9 +5,9 @@
 **A lightweight local knowledge-base RAG system built with Streamlit, LangChain and Chroma**
 
 [![Python](https://img.shields.io/badge/Python-3.10+-blue?style=flat-square)](https://www.python.org/)
-[![Streamlit](https://img.shields.io/badge/Streamlit-1.40-FF4B4B?style=flat-square&logo=streamlit&logoColor=white)](https://streamlit.io/)
-[![LangChain](https://img.shields.io/badge/LangChain-0.3-1C3C3C?style=flat-square&logo=langchain&logoColor=white)](https://www.langchain.com/)
-[![Chroma](https://img.shields.io/badge/Chroma-0.5-F48C06?style=flat-square&logo=chroma&logoColor=white)](https://www.trychroma.com/)
+[![Streamlit](https://img.shields.io/badge/Streamlit-1.39-FF4B4B?style=flat-square&logo=streamlit&logoColor=white)](https://streamlit.io/)
+[![LangChain](https://img.shields.io/badge/LangChain-0.1-1C3C3C?style=flat-square&logo=langchain&logoColor=white)](https://www.langchain.com/)
+[![Chroma](https://img.shields.io/badge/Chroma-0.4-F48C06?style=flat-square&logo=chroma&logoColor=white)](https://www.trychroma.com/)
 [![License](https://img.shields.io/badge/License-MIT-yellow?style=flat-square)](./LICENSE)
 
 [中文](README.md) | [English](README.en.md)
@@ -24,7 +24,7 @@ A lightweight, fully local **RAG (Retrieval-Augmented Generation)** project. Upl
 - **RAG Q&A** — a `Retrieval → Prompt → LLM → Output` chain with streaming output
 - **Session handling** — message history is kept, enabling follow-up questions in context
 
-> A clean starting point for learning RAG: readable structure, light dependencies, no GPU required. Swap in your own documents and it adapts to a real use case.
+> A starting point for learning RAG: light dependencies, no GPU required. Swap in your own documents and it adapts to a real use case.
 
 ## Demo
 
@@ -46,16 +46,13 @@ The sample knowledge base ships with clothing size recommendations, fabric care 
 
 ## Architecture
 
-```
-┌──────────────┐   upload .txt  ┌──────────────────┐   chunk + MD5 dedup
-│  Streamlit   │ ────────────▶ │  KnowledgeBase   │ ──────────────┐
-│  upload UI   │                │  (knowledge_base) │               │
-└──────────────┘                └──────────────────┘               ▼
-                                                          ┌────────────────┐
-┌──────────────┐   user question ┌──────────────────┐        │  Chroma        │
-│  Streamlit   │ ──────────────▶ │   RAG Chain      │ ─────▶ │  local vector  │
-│  chat UI     │ ◀────────────── │     (rag.py)     │        │  store         │
-└──────────────┘   streaming out └──────────────────┘        └────────────────┘
+```mermaid
+flowchart LR
+    UP["Streamlit upload UI"] -- "upload .txt" --> KB["KnowledgeBase<br/>chunking + MD5 dedup"]
+    KB --> DB[("Chroma vector store<br/>local persistence")]
+    CH["Streamlit chat UI"] -- "user question" --> RC["RAG Chain<br/>retrieve → prompt → LLM"]
+    DB -- "relevant chunks" --> RC
+    RC -- "streaming output" --> CH
 ```
 
 | Module | Description |
@@ -151,13 +148,9 @@ Check `config_data.py` for model and path settings, confirm the data directory e
 
 ## Roadmap
 
-A small but extensible RAG scaffold:
-
 - **Better retrieval** — add a reranker (e.g. bge-reranker) to improve precision
 - **More file types** — PDF / Markdown / Word via LangChain loaders
-- **Reasoning** — CoT → ToT, multi-model output mixing
-- **Storage** — Chroma (lightweight, ideal for reproduction) → FAISS / Milvus (high concurrency, production)
-- **Productization** — enterprise RAG → plugins → agents → AI product
+- **Storage** — Chroma (lightweight) → FAISS / Milvus (large-scale)
 
 ## License
 
