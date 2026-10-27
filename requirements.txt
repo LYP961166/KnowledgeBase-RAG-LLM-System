@@ -1,6 +1,9 @@
 # ===================== 核心必装依赖（项目运行必须） =====================
 # WEB界面核心：Streamlit（含聊天UI、文件上传、会话状态组件）
 streamlit>=1.35.0,<1.40.0
+# Streamlit 数据处理依赖；19+ 的新版本逐步要求 NumPy 2.x，
+# 而本项目的 Chroma 0.4.x 需要 NumPy <2.0，因此固定兼容范围。
+pyarrow>=12.0.0,<19.0.0
 # Streamlit文件上传功能配套依赖
 python-multipart>=0.0.9
 
@@ -23,7 +26,7 @@ chromadb>=0.4.24,<0.5.0
 numpy>=1.24.0,<2.0.0
 
 # ===================== 阿里云通义千问SDK与网络依赖 =====================
-# 阿里云DashScope官方SDK（通义千问qwen3-max、text-embedding-v4嵌入模型）
+# 阿里云DashScope官方SDK（通义千问qwen-plus、text-embedding-v4嵌入模型）
 dashscope>=1.20.0
 # 异步网络请求依赖（大模型流式输出、嵌入模型调用必备）
 aiohttp>=3.9.0

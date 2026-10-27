@@ -1,20 +1,13 @@
 from langchain_core.documents import Document
 from langchain_core.output_parsers import StrOutputParser
-from langchain_core.runnables import RunnablePassthrough, RunnableWithMessageHistory, RunnableLambda
+from langchain_core.runnables import RunnablePassthrough, RunnableLambda
+from langchain_core.runnables.history import RunnableWithMessageHistory
 from file_history_store import get_history
 from vector_stores import VectorStoreService
 from langchain_community.embeddings import DashScopeEmbeddings
 import config_data as config
 from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
 from langchain_community.chat_models.tongyi import ChatTongyi
-
-
-def print_prompt(prompt):
-    print("="*20)
-    print(prompt.to_string())
-    print("="*20)
-
-    return prompt
 
 
 class RagService(object):
@@ -27,14 +20,20 @@ class RagService(object):
         self.prompt_template = ChatPromptTemplate.from_messages(
             [
                 ("system", "以我提供的已知参考资料为主，"
-                 "简洁和专业的回答用户问题。参考资料:{context}。"),
-                ("system", "并且我提供用户的对话历史记录，如下："),
+                 "简洁和专业地回答用户问题。参考资料：{context}\n"
+                 "请结合下面的用户对话历史记录理解上下文。"),
                 MessagesPlaceholder("history"),
                 ("user", "请回答用户提问：{input}")
             ]
         )
 
-        self.chat_model = ChatTongyi(model=config.chat_model_name)
+        self.chat_model = ChatTongyi(
+            model=config.chat_model_name,
+            max_retries=config.chat_max_retries,
+            model_kwargs={
+                "request_timeout": config.chat_request_timeout_seconds,
+            },
+        )
 
         self.chain = self.__get_chain()
 
@@ -70,7 +69,7 @@ class RagService(object):
             {
                 "input": RunnablePassthrough(),
                 "context": RunnableLambda(format_for_retriever) | retriever | format_document
-            }| RunnableLambda(format_for_prompt_template) |self.prompt_template | print_prompt |self.chat_model | StrOutputParser()
+            }| RunnableLambda(format_for_prompt_template) |self.prompt_template |self.chat_model | StrOutputParser()
         )
 
         conversation_chain = RunnableWithMessageHistory(       # 增强的链
