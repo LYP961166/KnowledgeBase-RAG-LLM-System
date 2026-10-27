@@ -115,7 +115,7 @@ Core settings live in `config_data.py`:
 | Setting | Default | Description |
 |---------|---------|-------------|
 | `embedding_model_name` | `text-embedding-v4` | Embedding model |
-| `chat_model_name` | `qwen3-max` | Chat model |
+| `chat_model_name` | `qwen-plus` | Chat model |
 | `chunk_size` / `chunk_overlap` | `1000` / `100` | Chunking granularity |
 | `similarity_threshold` | `1` | Number of documents returned by retrieval |
 | `persist_directory` | `./chroma_db` | Vector store persistence directory |

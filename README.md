@@ -115,7 +115,7 @@ streamlit run app_chat.py
 | 配置项 | 默认值 | 说明 |
 |--------|--------|------|
 | `embedding_model_name` | `text-embedding-v4` | Embedding 模型 |
-| `chat_model_name` | `qwen3-max` | 对话模型 |
+| `chat_model_name` | `qwen-plus` | 对话模型 |
 | `chunk_size` / `chunk_overlap` | `1000` / `100` | 文本切分粒度 |
 | `similarity_threshold` | `1` | 检索返回的文档数量 |
 | `persist_directory` | `./chroma_db` | 向量库持久化目录 |

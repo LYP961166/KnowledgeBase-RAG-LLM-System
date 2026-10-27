@@ -7,8 +7,12 @@ venv/
 env/
 
 vector_db/
+chroma_db/
 chat_history/
 data/
+md5.text
+.env
+*.log
 
 .idea/
 .vscode/

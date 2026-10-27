@@ -16,7 +16,15 @@ max_spliter_char_number= 1000  # 文本分割阈值
 similarity_threshold =1     # 检索返回匹配的文档数量
 
 embedding_model_name="text-embedding-v4"
-chat_model_name="qwen3-max"
+chat_model_name="qwen-plus"
+
+# 长对话保护：只把最近若干条消息送入模型，避免提示词无限增长。
+max_history_messages = 12
+# 页面只保留最近若干条消息用于显示，避免 Streamlit 会话越来越大。
+max_ui_messages = 40
+# DashScope 流式请求在指定秒数内没有新片段时自动结束，避免无限阻塞。
+chat_request_timeout_seconds = 120
+chat_max_retries = 2
 
 #
 session_config = {
