@@ -1,0 +1,21 @@
+# 统一换行与二进制识别，避免在 Windows 上克隆后二进制文档被 CRLF 转换破坏
+* text=auto
+
+# 二进制：不做任何换行转换
+*.pdf   binary
+*.docx  binary
+*.doc   binary
+*.png   binary
+*.jpg   binary
+*.jpeg  binary
+*.gif   binary
+*.db    binary
+*.sqlite3 binary
+*.zip   binary
+
+# 源码与文档统一 LF
+*.py    text eol=lf
+*.md    text eol=lf
+*.txt   text eol=lf
+*.toml  text eol=lf
+*.yml   text eol=lf
